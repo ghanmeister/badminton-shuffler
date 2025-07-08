@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Badminton Shuffler</title>
+  <style>
+    :root {
+      --primary-color: #27ae60;
+      --primary-dark: #219150;
+      --secondary-color: #3498db;
+      --danger-color: #e74c3c;
+      --warning-color: #f39c12;
+      --light-gray: #ecf0f1;
+      --medium-gray: #bdc3c7;
+      --dark-gray: #7f8c8d;
+      --text-color: #2c3e50;
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --border-radius: 12px;
+      --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      overscroll-behavior-y: contain;
+    }
+    
+    body.modal-open {
+        overflow: hidden;
+    }
+    
+    .app-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px 15px 100px 15px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    h3 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+
+    h4 {
+        color: var(--text-color);
+        opacity: 0.9;
+        font-size: 1rem;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--light-gray);
+        padding-bottom: 8px;
+    }
+    
+    h5 {
+        font-size: 1rem;
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    /* Setup Section */
+    .setup-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 20px;
+    }
+
+    textarea, input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #fff;
+      -webkit-appearance: none;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    input[type="number"] {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .btn-danger {
+        background-color: var(--danger-color);
+        color: white;
+    }
+
+    .btn-toggle {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border: 1px solid var(--medium-gray);
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+    }
+
+    /* Court Display */
+    .court {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 20px;
+    }
+
+    .court-visual {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin: 15px 0;
+    }
+
+    .court-side {
+      width: 45%;
+      text-align: center;
+    }
+
+    .player-box {
+      background: var(--primary-color);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .vs-divider {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark-gray);
+    }
+
+    .court-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .court-actions .complete-button {
+      grid-column: 1 / -1;
+    }
+    .court-actions .team-shuffle-button {
+      background-color: var(--secondary-color);
+    }
+    .court-actions .sit-out-button {
+      background-color: var(--warning-color);
+    }
+    
+    /* Winner Selection Panel */
+    .winner-selection {
+        grid-column: 1 / -1;
+        display: none;
+        background: var(--light-gray);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+    .score-inputs {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .score-inputs div {
+        width: 45%;
+        text-align: center;
+    }
+    .score-inputs label {
+        font-weight: 500;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .winner-buttons button {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    .winner-buttons .btn-cancel {
+        background-color: var(--dark-gray);
+    }
+
+    /* Player Lists & Stats */
+    .players-list-card {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 20px;
+    }
+    .players-list-card .list-content {
+      color: var(--dark-gray);
+      line-height: 1.6;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .players-list-card.cooldown-box .list-content {
+        color: #856404;
+    }
+    .players-list-card.cooldown-box {
+        background-color: #fff3cd;
+    }
+    .stat-row, .history-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 4px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    .stat-row:last-child, .history-item:last-child {
+        border-bottom: none;
+    }
+    .stat-name {
+        font-weight: 500;
+    }
+    .stat-values, .history-details {
+        color: var(--dark-gray);
+        font-size: 0.95rem;
+    }
+    .history-item {
+        flex-direction: column;
+    }
+    .history-teams {
+        font-weight: 500;
+    }
+    .history-meta {
+        font-size: 0.85rem;
+        opacity: 0.8;
+    }
+    .history-teams .winner {
+        font-weight: bold;
+        color: var(--primary-dark);
+    }
+
+    /* Management Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal-overlay.is-open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-color);
+      width: 100%;
+      padding: 20px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      animation: slide-up 0.3s ease-out;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    @keyframes slide-up {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+    }
+
+    .close-btn {
+      font-size: 1.5rem;
+      font-weight: 300;
+      border: none;
+      background: none;
+      cursor: pointer;
+      width: auto;
+      padding: 0;
+    }
+
+    .management-section {
+        margin-bottom: 24px;
+    }
+    
+    .changelog, .help-content {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: var(--dark-gray);
+    }
+    .changelog ul {
+        padding-left: 20px;
+    }
+    .help-content img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid var(--light-gray);
+    }
+
+    /* Bottom Nav Bar for actions */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      padding: 10px 15px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Tabs */
+    .tab-buttons {
+        display: flex;
+        margin-bottom: 15px;
+    }
+    .tab-buttons button {
+        flex: 1;
+        padding: 10px;
+        background: var(--light-gray);
+        color: var(--dark-gray);
+        border: none;
+        border-bottom: 2px solid transparent;
+    }
+    .tab-buttons button:first-child {
+        border-top-left-radius: 8px;
+    }
+    .tab-buttons button:last-child {
+        border-top-right-radius: 8px;
+    }
+    .tab-buttons button.active {
+        background: var(--card-bg);
+        border-bottom: 2px solid var(--primary-color);
+        font-weight: bold;
+    }
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Notification Toast */
+    .notification {
+        position: fixed;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 1001;
+        text-align: center;
+        transition: top 0.4s ease-in-out;
+        background-color: var(--primary-color);
+    }
+    .notification.show {
+        top: 20px;
+    }
+    .notification.error {
+        background-color: var(--danger-color);
+    }
+
+
+    /* Hide/Show utility */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="notification" class="notification"></div>
+
+  <div class="app-container">
+    <header>
+      <h1>Badminton Shuffler</h1>
+    </header>
+
+    <div id="setupControls" class="setup-card">
+      <h3>Initial Setup</h3>
+      <textarea id="players" placeholder="Enter player names, one per line..."></textarea>
+      <input type="number" id="courtCount" placeholder="Number of courts" min="1" />
+      <button id="shuffleBtn" class="btn-primary">Shuffle & Start</button>
+      <button id="initialHelpBtn" class="btn-secondary" style="margin-top: 10px;">How to Use</button>
+    </div>
+
+    <div id="statsContainer"></div>
+    <div id="historyContainer"></div>
+    <div id="results"></div>
+  </div>
+
+  <div class="bottom-nav hidden" id="actionBar">
+    <button id="statsBtn" class="btn-toggle">Stats</button>
+    <button id="historyBtn" class="btn-toggle">History</button>
+    <button id="manageGameBtn" class="btn-toggle">Manage</button>
+    <button id="helpBtn" class="btn-toggle">Help</button>
+  </div>
+  
+  <div class="modal-overlay" id="managementModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Management</h3>
+        <button class="close-btn" data-modal="managementModal">&times;</button>
+      </div>
+      <div id="modalBody">
+        <div id="mainManagementPanel">
+            <!-- Player Management -->
+            <div class="management-section">
+                <h4>Add New Players</h4>
+                <textarea id="newPlayers" placeholder="Enter player names, one per line..."></textarea>
+                <button id="addPlayerBtn" class="btn-primary">Add Players</button>
+            </div>
+            <div class="management-section">
+                <h4>Remove Player</h4>
+                <select id="playerToRemove"><option value="">Select Player</option></select>
+                <button id="removePlayerBtn" class="btn-danger">Remove Selected Player</button>
+            </div>
+             <!-- Court Management -->
+            <div class="management-section">
+                <h4>Manage Courts</h4>
+                <button id="addCourtBtn" class="btn-primary" style="margin-bottom: 10px;">Add Court</button>
+                <select id="courtToRemove" style="margin-bottom: 10px;"><option value="">Select Court to Remove</option></select>
+                <button id="removeCourtBtn" class="btn-danger">Remove Selected Court</button>
+            </div>
+             <!-- Game Reset -->
+            <div class="management-section">
+                <h4>Reset Game</h4>
+                <button id="resetGameBtn" class="btn-danger">Reset Everything</button>
+            </div>
+            <!-- App Info -->
+            <div class="management-section">
+                <h4>About This App</h4>
+                <div class="changelog">
+                    <p><strong>Author:</strong> Ghan Caballes</p>
+					<p><strong>Contributors:</strong> TBA </p>
+                    <p><strong>Version:</strong> 2.4</p>
+                    <h5>Changelog:</h5>
+                    <ul>
+                        <li><strong>v2.4:</strong> Added Help button to initial setup.</li>
+                        <li><strong>v2.3:</strong> Added 'Help' section and App Info.</li>
+                        <li><strong>v2.2:</strong> Score inputs now use placeholders.</li>
+                        <li><strong>v2.1:</strong> Winner is now automatically selected based on score.</li>
+                        <li><strong>v2.0:</strong> Added Match History, Pairing Stats, and Score Keeping.</li>
+                        <li><strong>v1.4:</strong> Added success notifications (toasts).</li>
+                        <li><strong>v1.3:</strong> Added total player count to Stats panel.</li>
+                        <li><strong>v1.2:</strong> Added persistent storage and a Reset button.</li>
+                        <li><strong>v1.1:</strong> Implemented bulk player additions.</li>
+                        <li><strong>v1.0:</strong> Initial release.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Sit Out Management (Dynamically created) -->
+        <div id="sitOutManagementControls" class="hidden"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay" id="helpModal">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h3>How to Use</h3>
+              <button class="close-btn" data-modal="helpModal">&times;</button>
+          </div>
+          <div class="help-content">
+              <h5>1. Initial Setup</h5>
+              <p>To begin, enter the names of all players into the text area, with each name on a new line. Then, enter the number of courts available and click "Shuffle & Start".</p>
+              <img src="https://ghancaballes.com/wp-content/uploads/2025/07/initial-setup.png" alt="Screenshot of the initial setup screen with player list and court count fields highlighted.">
+
+              <h5>2. The Main Screen</h5>
+              <p>Once started, you will see courts populated with players. The app automatically creates the most balanced teams possible, trying to avoid frequent repeats of teammates and opponents.</p>
+              <p>Below the courts, you'll find the "Waiting Area" for players ready to play and the "Players on Cooldown" list for those who just finished a game.</p>
+
+              <h5>3. Completing a Game</h5>
+              <p>When a game is finished, click the "Complete Game" button on the corresponding court. Enter the scores for each team and click "Record Game Result". The app automatically determines the winner.</p>
+              <p>The players from that game will be moved to the cooldown list, and the empty court will be refilled from the waiting list.</p>
+              <img src="https://ghancaballes.com/wp-content/uploads/2025/07/complete-a-game.png" alt="Screenshot of how to complete a game.">
+
+              <h5>4. Bottom Action Bar</h5>
+              <ul>
+                  <li><strong>Stats:</strong> Toggles a panel showing player win/loss records and detailed pairing stats. You can see how often any two players have been teammates versus opponents.</li>
+                  <li><strong>History:</strong> Toggles a panel showing a complete log of all matches played, including teams, scores, and timestamps.</li>
+                  <li><strong>Manage:</strong> Opens a screen where you can add or remove players and courts during a session, or reset the entire game.</li>
+                  <li><strong>Help:</strong> Opens this guide.</li>
+              </ul>
+              <img src="https://ghancaballes.com/wp-content/uploads/2025/07/bottom-action-bar.png" alt="Screenshot of the bottom action bar.">
+
+              <h5>5. Persistent Storage</h5>
+              <p>Your game state is saved automatically. If you accidentally refresh the page, your session will be restored, so you won't lose your progress.</p>
+          </div>
+      </div>
+  </div>
+
+
+  <script>
+    // --- STATE ---
+    let courts = []; 
+    let waitingPlayers = [];
+    let playersOnCooldown = [];
+    let playCount = {};
+    let matchHistory = [];
+    let teamPairings = {};
+    let opponentPairings = {};
+    let allPlayersList = [];
+    let showStats = false;
+    let showHistory = false;
+    let gameInProgress = false;
+
+    // --- NOTIFICATIONS ---
+    function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type} show`;
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // --- STORAGE ---
+    function saveState() {
+        if (!gameInProgress) return;
+        const gameState = {
+            courts, waitingPlayers, playersOnCooldown, playCount, matchHistory,
+            teamPairings, opponentPairings, allPlayersList, gameInProgress
+        };
+        localStorage.setItem('badmintonGameState', JSON.stringify(gameState));
+    }
+
+    function loadState() {
+        const savedState = localStorage.getItem('badmintonGameState');
+        if (!savedState) return;
+
+        const gameState = JSON.parse(savedState);
+        if (gameState.gameInProgress) {
+            courts = gameState.courts;
+            waitingPlayers = gameState.waitingPlayers;
+            playersOnCooldown = gameState.playersOnCooldown;
+            playCount = gameState.playCount;
+            matchHistory = gameState.matchHistory || [];
+            teamPairings = gameState.teamPairings;
+            opponentPairings = gameState.opponentPairings;
+            allPlayersList = gameState.allPlayersList;
+            gameInProgress = gameState.gameInProgress;
+
+            document.getElementById('setupControls').classList.add('hidden');
+            document.getElementById('actionBar').classList.remove('hidden');
+            renderAll();
+            updateDropdowns();
+        }
+    }
+
+    // --- UTILITIES ---
+    function getPairKey(a, b) { return a < b ? a + "|" + b : b + "|" + a; }
+    function shuffleArray(array) {
+      for (let i=array.length-1; i>0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [array[i],array[j]] = [array[j],array[i]];
+      }
+    }
+    function getCombinations(arr, k) {
+      const results = [];
+      function comb(current, start) {
+        if (current.length === k) { results.push(current.slice()); return; }
+        for (let i = start; i < arr.length; i++) {
+          current.push(arr[i]);
+          comb(current, i+1);
+          current.pop();
+        }
+      }
+      comb([],0);
+      return results;
+    }
+    function initPairings(players) {
+      teamPairings = {};
+      opponentPairings = {};
+      for (let i=0; i<players.length; i++) {
+        for (let j=i+1; j<players.length; j++) {
+          const key = getPairKey(players[i], players[j]);
+          if (teamPairings[key] === undefined) teamPairings[key] = 0;
+          if (opponentPairings[key] === undefined) opponentPairings[key] = 0;
+        }
+      }
+    }
+    function updatePairings(teamA, teamB) {
+      teamPairings[getPairKey(teamA[0], teamA[1])] += 1;
+      teamPairings[getPairKey(teamB[0], teamB[1])] += 1;
+      teamA.forEach(a => teamB.forEach(b => {
+        opponentPairings[getPairKey(a,b)] += 1;
+      }));
+    }
+    function pickBestGroup(group) {
+        if (group.length < 4) return null;
+        let bestScore = Infinity, bestSplit = null;
+        let splits = [
+            [[group[0], group[1]], [group[2], group[3]]],
+            [[group[0], group[2]], [group[1], group[3]]],
+            [[group[0], group[3]], [group[1], group[2]]]
+        ];
+        for (let [teamA, teamB] of splits) {
+            let score = (teamPairings[getPairKey(teamA[0], teamA[1])] || 0) + 
+                        (teamPairings[getPairKey(teamB[0], teamB[1])] || 0);
+            teamA.forEach(p1 => teamB.forEach(p2 => {
+                score += (opponentPairings[getPairKey(p1, p2)] || 0);
+            }));
+            if (score < bestScore) {
+                bestScore = score;
+                bestSplit = { teamA, teamB };
+            }
+        }
+        return bestSplit;
+    }
+
+    // --- REFILL LOGIC ---
+    function flushCooldownToWaiting() {
+        if (playersOnCooldown.length > 0) {
+            waitingPlayers.push(...playersOnCooldown);
+            playersOnCooldown = [];
+            shuffleArray(waitingPlayers);
+        }
+    }
+
+    function refillAllEmptyCourts() {
+        for (let i = 0; i < courts.length; i++) {
+            if (courts[i].players.length === 0) {
+                if (waitingPlayers.length < 4) break;
+                const playersForCourt = pickBestPlayersForCourt();
+                if (!playersForCourt) break;
+                const teams = pickBestGroup(playersForCourt);
+                courts[i] = { players: playersForCourt, teamA: teams.teamA, teamB: teams.teamB };
+                waitingPlayers = waitingPlayers.filter(p => !playersForCourt.includes(p));
+            }
+        }
+
+        const hasEmptyCourts = courts.some(c => c.players.length === 0);
+        if (hasEmptyCourts && waitingPlayers.length < 4 && playersOnCooldown.length > 0) {
+            flushCooldownToWaiting();
+            refillAllEmptyCourts();
+        }
+        saveState();
+    }
+
+    function pickBestPlayersForCourt() {
+        if (waitingPlayers.length < 4) return null;
+        const groups = getCombinations(waitingPlayers, 4);
+        let bestGroup = null, minScore = Infinity;
+        for (const group of groups) {
+            let score = 0;
+            const pairs = getCombinations(group, 2);
+            for (const pair of pairs) {
+                const key = getPairKey(pair[0], pair[1]);
+                score += (teamPairings[key] || 0) + (opponentPairings[key] || 0);
+            }
+            if (score < minScore) {
+                minScore = score;
+                bestGroup = group;
+            }
+        }
+        return bestGroup;
+    }
+
+    // --- INITIALIZATION & SHUFFLE ---
+    document.getElementById('shuffleBtn').onclick = function() {
+      allPlayersList = document.getElementById('players').value.split('\n').map(p=>p.trim()).filter(Boolean);
+      if (allPlayersList.length < 4) { alert('At least 4 players required.'); return; }
+      let courtCount = parseInt(document.getElementById('courtCount').value);
+      if (!courtCount || courtCount < 1) { alert('Please enter a valid number of courts.'); return; }
+      playCount = {};
+      allPlayersList.forEach(p => { playCount[p] = {games: 0, wins: 0, losses: 0}; });
+      matchHistory = [];
+      showStats = false;
+      showHistory = false;
+      gameInProgress = true;
+      initPairings(allPlayersList);
+
+      courts = [];
+      waitingPlayers = allPlayersList.slice();
+      playersOnCooldown = [];
+      shuffleArray(waitingPlayers);
+
+      for (let i = 0; i < courtCount; i++) courts.push({ players: [], teamA: [], teamB: [] });
+      refillAllEmptyCourts();
+
+      document.getElementById('setupControls').classList.add('hidden');
+      document.getElementById('actionBar').classList.remove('hidden');
+      renderAll();
+      updateDropdowns();
+    };
+
+    // --- PLAYER & COURT MANAGEMENT ---
+    document.getElementById('addPlayerBtn').onclick = function() {
+        const newPlayerNames = document.getElementById('newPlayers').value.split('\n')
+            .map(p => p.trim())
+            .filter(Boolean);
+
+        if (newPlayerNames.length === 0) { alert('Please enter at least one player name.'); return; }
+        let addedCount = 0;
+        let existingNames = [];
+
+        newPlayerNames.forEach(name => {
+            if (allPlayersList.includes(name)) {
+                existingNames.push(name);
+            } else {
+                allPlayersList.push(name);
+                playCount[name] = {games: 0, wins: 0, losses: 0};
+                playersOnCooldown.push(name);
+                addedCount++;
+            }
+        });
+
+        let notificationMessage = '';
+        if (addedCount > 0) {
+            notificationMessage += `${addedCount} player(s) added.`;
+            initPairings(allPlayersList); 
+            document.getElementById('newPlayers').value = '';
+            updateDropdowns();
+            refillAllEmptyCourts();
+            renderAll();
+        }
+        
+        if (existingNames.length > 0) {
+            notificationMessage += ` ${existingNames.length} already existed.`;
+        }
+
+        showNotification(notificationMessage.trim());
+        closeModal('managementModal');
+    };
+
+    document.getElementById('removePlayerBtn').onclick = function() {
+      const select = document.getElementById('playerToRemove');
+      const playerToRemove = select.value;
+      if (!playerToRemove) { alert('Please select a player to remove'); return; }
+
+      delete playCount[playerToRemove];
+      allPlayersList = allPlayersList.filter(p => p !== playerToRemove);
+      for (let i = 0; i < courts.length; ++i) {
+        if (courts[i].players.includes(playerToRemove)) {
+          const otherPlayers = courts[i].players.filter(p => p !== playerToRemove);
+          playersOnCooldown.push(...otherPlayers);
+          courts[i] = { players: [], teamA: [], teamB: [] };
+        }
+      }
+      waitingPlayers = waitingPlayers.filter(p => p !== playerToRemove);
+      playersOnCooldown = playersOnCooldown.filter(p => p !== playerToRemove);
+      initPairings(allPlayersList);
+      updateDropdowns();
+      refillAllEmptyCourts();
+      renderAll();
+      showNotification(`Player '${playerToRemove}' removed.`);
+      closeModal('managementModal');
+    };
+     document.getElementById('addCourtBtn').onclick = function() {
+      courts.push({ players: [], teamA: [], teamB: [] });
+      updateDropdowns();
+      refillAllEmptyCourts();
+      renderAll();
+      showNotification('Court added successfully.');
+    };
+    document.getElementById('removeCourtBtn').onclick = function() {
+      const select = document.getElementById('courtToRemove');
+      const courtIndex = parseInt(select.value);
+      if (isNaN(courtIndex) || courtIndex < 0 || courtIndex >= courts.length) {
+        alert('Please select a valid court to remove'); return;
+      }
+      if (courts.length <= 1) {
+        alert('Cannot remove the last court'); return;
+      }
+      playersOnCooldown.push(...courts[courtIndex].players);
+      courts.splice(courtIndex, 1);
+      updateDropdowns();
+      refillAllEmptyCourts();
+      renderAll();
+      showNotification(`Court ${courtIndex + 1} removed.`);
+    };
+    document.getElementById('resetGameBtn').onclick = function() {
+        if (confirm('Are you sure you want to reset everything? All players, courts, and stats will be deleted.')) {
+            localStorage.removeItem('badmintonGameState');
+            window.location.reload();
+        }
+    };
+    
+    // --- RENDER ---
+    function renderAll() {
+        renderResults();
+        renderStats();
+        renderHistory();
+    }
+    function renderResults() {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+        courts.forEach((court, idx) => {
+            resultsDiv.appendChild(renderCourt(court.players, court.teamA, court.teamB, idx));
+        });
+        
+        if (waitingPlayers.length) {
+            resultsDiv.appendChild(renderSection('Waiting Area', waitingPlayers.map(p => `${p} (${playCount[p]?.games || 0} games)`).join(', '), ''));
+        }
+
+        if (playersOnCooldown.length) {
+            resultsDiv.appendChild(renderSection('Players on Cooldown', playersOnCooldown.map(p => `${p} (${playCount[p]?.games || 0} games)`).join(', '), 'cooldown-box'));
+        }
+    }
+    function renderCourt(courtPlayers, teamA, teamB, courtIdx) {
+      const courtDiv = document.createElement('div');
+      courtDiv.className = 'court';
+      let statusOrButton;
+      if (courtPlayers.length === 4) {
+          statusOrButton = `<button class="btn-primary complete-button" data-action="complete" data-court="${courtIdx}">Complete Game</button>`;
+      } else {
+          statusOrButton = '<p style="text-align:center; color: var(--warning-color); font-weight:500;">Waiting for players...</p>';
+      }
+
+      courtDiv.innerHTML = `
+        <h3>Court ${courtIdx + 1}</h3>
+        <div class="court-visual">
+          <div class="court-side">
+            <div class="player-box">${teamA[0]||'--'}</div>
+            <div class="player-box">${teamA[1]||'--'}</div>
+          </div>
+          <div class="vs-divider">VS</div>
+          <div class="court-side">
+            <div class="player-box">${teamB[0]||'--'}</div>
+            <div class="player-box">${teamB[1]||'--'}</div>
+          </div>
+        </div>
+        <div class="court-actions">
+          ${statusOrButton}
+          <div class="winner-selection" id="winnerSelection-${courtIdx}">
+            <div class="score-inputs">
+                <div>
+                    <label for="scoreA-${courtIdx}">Team A Score</label>
+                    <input type="number" id="scoreA-${courtIdx}" min="0" placeholder="0">
+                </div>
+                <div>
+                    <label for="scoreB-${courtIdx}">Team B Score</label>
+                    <input type="number" id="scoreB-${courtIdx}" min="0" placeholder="0">
+                </div>
+            </div>
+            <div class="winner-buttons">
+                <button data-action="record-score" data-court="${courtIdx}" class="btn-primary">Record Game Result</button>
+                <button class="btn-cancel" data-action="cancel-win" data-court="${courtIdx}">Cancel</button>
+            </div>
+          </div>
+          <button class="team-shuffle-button" data-action="shuffleteam" data-court="${courtIdx}">Shuffle Teams</button>
+          <button class="sit-out-button" data-action="sitout" data-court="${courtIdx}">Sit Out / Swap</button>
+        </div>
+      `;
+      return courtDiv;
+    }
+    function renderSection(title, content, type) {
+        const div = document.createElement('div');
+        div.className = 'players-list-card ' + type;
+        div.innerHTML = `<h4>${title}</h4><div class="list-content">${content}</div>`;
+        return div;
+    }
+    
+    function renderStats() {
+        const container = document.getElementById('statsContainer');
+        container.innerHTML = '';
+        if (!showStats) return;
+
+        let playerOptions = allPlayersList.map(p => `<option value="${p}">${p}</option>`).join('');
+
+        container.innerHTML = `
+            <div class="players-list-card">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="playerStats">Player Stats</button>
+                    <button class="tab-btn" data-tab="pairingStats">Pairing Stats</button>
+                </div>
+                <div id="playerStats" class="tab-content active"></div>
+                <div id="pairingStats" class="tab-content">
+                    <select id="pairingPlayerSelect" class="form-control mb-2">
+                        <option value="">Select a player...</option>
+                        ${playerOptions}
+                    </select>
+                    <div id="pairingStatsResult"></div>
+                </div>
+            </div>
+        `;
+        renderPlayerStats();
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+        
+        document.getElementById('pairingPlayerSelect').addEventListener('change', (e) => {
+            renderPairingStats(e.target.value);
+        });
+    }
+
+    function renderPlayerStats() {
+        const container = document.getElementById('playerStats');
+        if (!container) return;
+        let stats = allPlayersList.map(player => ({
+            name: player,
+            ...playCount[player]
+        })).sort((a, b) => b.games - a.games || a.name.localeCompare(b.name));
+        const content = stats.map(stat => 
+            `<div class="stat-row">
+                <span class="stat-name">${stat.name}</span>
+                <span class="stat-values">${stat.games}G / ${stat.wins}W / ${stat.losses}L</span>
+            </div>`
+        ).join('');
+        container.innerHTML = `<div class="list-content">${content}</div>`;
+    }
+
+    function renderPairingStats(selectedPlayer) {
+        const container = document.getElementById('pairingStatsResult');
+        if (!selectedPlayer) {
+            container.innerHTML = '';
+            return;
+        }
+        let pairings = allPlayersList
+            .filter(p => p !== selectedPlayer)
+            .map(otherPlayer => {
+                const pairKey = getPairKey(selectedPlayer, otherPlayer);
+                return {
+                    name: otherPlayer,
+                    team: teamPairings[pairKey] || 0,
+                    opp: opponentPairings[pairKey] || 0,
+                };
+            })
+            .sort((a,b) => (b.team + b.opp) - (a.team + a.opp));
+
+        const content = pairings.map(p => 
+            `<div class="stat-row">
+                <span class="stat-name">${p.name}</span>
+                <span class="stat-values">Teammate: ${p.team} | Opponent: ${p.opp}</span>
+            </div>`
+        ).join('');
+        container.innerHTML = `<div class="list-content">${content}</div>`;
+    }
+    
+    function renderHistory() {
+        const container = document.getElementById('historyContainer');
+        container.innerHTML = '';
+        if (!showHistory || matchHistory.length === 0) return;
+        
+        const content = matchHistory.map(match => {
+            const teamAStr = match.teamA.join(' & ');
+            const teamBStr = match.teamB.join(' & ');
+            const teamAFormatted = match.winner === 'A' ? `<span class="winner">${teamAStr}</span>` : teamAStr;
+            const teamBFormatted = match.winner === 'B' ? `<span class="winner">${teamBStr}</span>` : teamBStr;
+
+            return `<div class="history-item">
+                <div class="history-teams">${teamAFormatted} vs ${teamBFormatted}</div>
+                <div class="history-meta">Score: ${match.scoreA} - ${match.scoreB} | Court ${match.court} | ${match.timestamp}</div>
+            </div>`;
+        }).join('');
+        
+        container.innerHTML = `<div class="players-list-card"><h4>Match History</h4><div class="list-content">${content}</div></div>`;
+    }
+
+    window.recordWinner = function(courtIdx, winner, scoreA, scoreB) {
+      const court = courts[courtIdx];
+      if (court.players.length < 4) return;
+      let teamA = court.teamA, teamB = court.teamB;
+      if (winner === 'A') {
+        teamA.forEach(p => { playCount[p].games++; playCount[p].wins++; });
+        teamB.forEach(p => { playCount[p].games++; playCount[p].losses++; });
+      } else {
+        teamB.forEach(p => { playCount[p].games++; playCount[p].wins++; });
+        teamA.forEach(p => { playCount[p].games++; playCount[p].losses++; });
+      }
+      updatePairings(teamA, teamB);
+      matchHistory.unshift({ court: courtIdx+1, teamA, teamB, winner, scoreA, scoreB, timestamp: new Date().toLocaleString() });
+      playersOnCooldown.push(...court.players);
+      courts[courtIdx] = { players: [], teamA: [], teamB: [] };
+      refillAllEmptyCourts();
+      renderAll();
+      updateDropdowns();
+    };
+    
+    function shuffleTeams(courtIdx) {
+        let court = courts[courtIdx];
+        if (!court || court.players.length < 4) return;
+        let playersToShuffle = [...court.players];
+        shuffleArray(playersToShuffle);
+        court.teamA = [playersToShuffle[0], playersToShuffle[1]];
+        court.teamB = [playersToShuffle[2], playersToShuffle[3]];
+        renderAll();
+        saveState();
+    }
+    
+    // --- EVENT LISTENERS ---
+    document.getElementById('results').onclick = function(e) {
+      const target = e.target;
+      const action = target.getAttribute('data-action');
+      const courtIdx = parseInt(target.getAttribute('data-court'));
+      
+      if (isNaN(courtIdx)) return;
+
+      if (action === 'complete') {
+        document.querySelector(`#winnerSelection-${courtIdx}`).style.display = 'block';
+        target.style.display = 'none';
+      } else if (action === 'record-score') {
+        const scoreA = parseInt(document.getElementById(`scoreA-${courtIdx}`).value, 10);
+        const scoreB = parseInt(document.getElementById(`scoreB-${courtIdx}`).value, 10);
+
+        if (isNaN(scoreA) || isNaN(scoreB) || scoreA < 0 || scoreB < 0) {
+            alert('Please enter valid, non-negative scores.');
+            return;
+        }
+        if (scoreA === scoreB) {
+            alert('Scores cannot be a tie. Please declare a winner.');
+            return;
+        }
+        const winner = scoreA > scoreB ? 'A' : 'B';
+        recordWinner(courtIdx, winner, scoreA, scoreB);
+      } else if (action === 'cancel-win') {
+        document.querySelector(`#winnerSelection-${courtIdx}`).style.display = 'none';
+        document.querySelector(`.complete-button[data-court="${courtIdx}"]`).style.display = 'block';
+      } else if (action === 'shuffleteam') {
+        shuffleTeams(courtIdx);
+      } else if (action === 'sitout') {
+        showSitOutModal(courtIdx);
+      }
+    };
+
+    document.getElementById('statsBtn').addEventListener('click', () => {
+        showStats = !showStats;
+        showHistory = false;
+        renderAll();
+    });
+    document.getElementById('historyBtn').addEventListener('click', () => {
+        showHistory = !showHistory;
+        showStats = false;
+        renderAll();
+    });
+    document.getElementById('initialHelpBtn').addEventListener('click', () => openModal('helpModal'));
+
+    function updateDropdowns() {
+      const courtSelect = document.getElementById('courtToRemove');
+      courtSelect.innerHTML = '<option value="">Select Court to Remove</option>';
+      courts.forEach((_, idx) => {
+        courtSelect.innerHTML += `<option value="${idx}">Court ${idx + 1}</option>`;
+      });
+      const playerSelect = document.getElementById('playerToRemove');
+      playerSelect.innerHTML = '<option value="">Select Player</option>';
+      allPlayersList.sort().forEach(player => {
+        playerSelect.innerHTML += `<option value="${player}">${player}</option>`;
+      });
+    }
+
+    // --- MODAL CONTROLS ---
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('is-open');
+        document.body.classList.add('modal-open');
+    }
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('is-open');
+        if (!document.querySelector('.modal-overlay.is-open')) {
+            document.body.classList.remove('modal-open');
+        }
+    }
+
+    document.getElementById('manageGameBtn').addEventListener('click', () => {
+        document.getElementById('mainManagementPanel').classList.remove('hidden');
+        document.getElementById('sitOutManagementControls').classList.add('hidden');
+        document.getElementById('modalTitle').textContent = 'Manage Game';
+        openModal('managementModal');
+    });
+    document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
+
+    document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            closeModal(this.getAttribute('data-modal'));
+        });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal(this.id);
+            }
+        });
+    });
+
+    // --- SIT OUT LOGIC ---
+    function showSitOutModal(courtIdx) {
+        const court = courts[courtIdx];
+        if (court.players.length < 4) { alert("Cannot swap players on an incomplete court."); return; }
+        const availableReplacements = [...waitingPlayers, ...playersOnCooldown];
+        if (availableReplacements.length === 0) { alert("No players available to swap in."); return; }
+
+        const sitOutPanel = document.getElementById('sitOutManagementControls');
+        document.getElementById('mainManagementPanel').classList.add('hidden');
+        sitOutPanel.classList.remove('hidden');
+        document.getElementById('modalTitle').textContent = `Swap Player on Court ${courtIdx + 1}`;
+        
+        let playerOptions = court.players.map(p => `<option value="${p}">${p}</option>`).join('');
+        let replacementOptions = availableReplacements.map(p => `<option value="${p}">${p}</option>`).join('');
+
+        sitOutPanel.innerHTML = `
+            <div class="management-section">
+                <h4>Player to Sit Out</h4>
+                <select id="sitOutPlayerSelect">${playerOptions}</select>
+            </div>
+            <div class="management-section">
+                <h4>Replacement Player</h4>
+                <select id="sitOutReplacementSelect">${replacementOptions}</select>
+            </div>
+            <div class="management-section">
+                <button id="sitOutConfirmBtn" class="btn-primary">Confirm Swap</button>
+            </div>
+        `;
+        
+        openModal('managementModal');
+        document.getElementById('sitOutConfirmBtn').onclick = () => processSitOut(courtIdx);
+    }
+
+    function processSitOut(courtIdx) {
+        const playerToSitOut = document.getElementById('sitOutPlayerSelect').value;
+        const replacementPlayer = document.getElementById('sitOutReplacementSelect').value;
+
+        if (!playerToSitOut || !replacementPlayer || playerToSitOut === replacementPlayer) {
+            alert('Invalid selection. Please choose two different players.');
+            return;
+        }
+
+        let court = courts[courtIdx];
+        const playerIndex = court.players.indexOf(playerToSitOut);
+        court.players[playerIndex] = replacementPlayer;
+
+        if (court.teamA.includes(playerToSitOut)) {
+            court.teamA[court.teamA.indexOf(playerToSitOut)] = replacementPlayer;
+        } else {
+            court.teamB[court.teamB.indexOf(playerToSitOut)] = replacementPlayer;
+        }
+
+        waitingPlayers = waitingPlayers.filter(p => p !== replacementPlayer);
+        playersOnCooldown = playersOnCooldown.filter(p => p !== replacementPlayer);
+        playersOnCooldown.push(playerToSitOut);
+        
+        refillAllEmptyCourts();
+        renderAll();
+        closeModal('managementModal');
+    }
+
+    // --- Initial Load ---
+    loadState();
+
+  </script>
+</body>
+</html>
