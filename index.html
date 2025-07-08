@@ -62,8 +62,8 @@
     h4 {
         color: var(--text-color);
         opacity: 0.9;
-        font-size: 1rem;
-        margin-bottom: 8px;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
         border-bottom: 1px solid var(--light-gray);
         padding-bottom: 8px;
     }
@@ -333,6 +333,10 @@
 
     .management-section {
         margin-bottom: 24px;
+        background: var(--card-bg);
+        padding: 16px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
     }
     
     .changelog, .help-content {
@@ -466,36 +470,37 @@
         <div id="mainManagementPanel">
             <!-- Player Management -->
             <div class="management-section">
-                <h4>Add New Players</h4>
+                <h4>Player Management</h4>
+                <h5>Add New Players</h5>
                 <textarea id="newPlayers" placeholder="Enter player names, one per line..."></textarea>
                 <button id="addPlayerBtn" class="btn-primary">Add Players</button>
-            </div>
-            <div class="management-section">
-                <h4>Remove Player</h4>
+                <h5 style="margin-top: 20px;">Remove Player</h5>
                 <select id="playerToRemove"><option value="">Select Player</option></select>
                 <button id="removePlayerBtn" class="btn-danger">Remove Selected Player</button>
             </div>
              <!-- Court Management -->
             <div class="management-section">
-                <h4>Manage Courts</h4>
-                <button id="addCourtBtn" class="btn-primary" style="margin-bottom: 10px;">Add Court</button>
-                <select id="courtToRemove" style="margin-bottom: 10px;"><option value="">Select Court to Remove</option></select>
+                <h4>Court Management</h4>
+                <h5>Add Court</h5>
+                <button id="addCourtBtn" class="btn-primary">Add New Court</button>
+                <h5 style="margin-top: 20px;">Remove Court</h5>
+                <select id="courtToRemove"><option value="">Select Court to Remove</option></select>
                 <button id="removeCourtBtn" class="btn-danger">Remove Selected Court</button>
             </div>
-             <!-- Game Reset -->
+             <!-- Game Actions -->
             <div class="management-section">
-                <h4>Reset Game</h4>
+                <h4>Game Actions</h4>
                 <button id="resetGameBtn" class="btn-danger">Reset Everything</button>
             </div>
             <!-- App Info -->
             <div class="management-section">
-                <h4>About This App</h4>
+                <h4>About</h4>
                 <div class="changelog">
-                    <p><strong>Author:</strong> Ghan Caballes</p>
-					<p><strong>Contributors:</strong> TBA </p>
-                    <p><strong>Version:</strong> 2.4</p>
+                    <p><strong>Author:</strong> ghan caballes</p>
+                    <p><strong>Version:</strong> 2.5</p>
                     <h5>Changelog:</h5>
                     <ul>
+                        <li><strong>v2.5:</strong> Grouped items in Management panel.</li>
                         <li><strong>v2.4:</strong> Added Help button to initial setup.</li>
                         <li><strong>v2.3:</strong> Added 'Help' section and App Info.</li>
                         <li><strong>v2.2:</strong> Score inputs now use placeholders.</li>
