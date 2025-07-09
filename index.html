@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Badminton Shuffler</title>
   <style>
+    /* Default: Light Mode */
     :root {
       --primary-color: #27ae60;
       --primary-dark: #219150;
@@ -16,9 +17,24 @@
       --dark-gray: #7f8c8d;
       --text-color: #2c3e50;
       --bg-color: #f4f6f8;
-      --card-bg: #ffffff;
+      --card-bg: aliceblue;
+      --border-color: #ababab; 
+      --input-bg: #ffffff;
       --border-radius: 12px;
       --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --text-color: #ecf0f1;
+      --bg-color: #1a1a1a;
+      --card-bg: #2c3e50;
+      --border-color: #566573; 
+      --input-bg: #34495e;
+      --light-gray: #34495e;
+      --medium-gray: #566573;
+      --dark-gray: #95a5a6;
+      --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     * {
@@ -32,6 +48,7 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       overscroll-behavior-y: contain;
+      transition: background-color 0.2s, color 0.2s;
     }
     
     body.modal-open {
@@ -47,6 +64,10 @@
     header {
       text-align: center;
       margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
 
     h1 {
@@ -64,7 +85,7 @@
         opacity: 0.9;
         font-size: 1.1rem;
         margin-bottom: 12px;
-        border-bottom: 1px solid var(--light-gray);
+        border-bottom: 1px solid var(--border-color);
         padding-bottom: 8px;
     }
     
@@ -87,10 +108,11 @@
       width: 100%;
       padding: 12px;
       margin-bottom: 12px;
-      border: 1px solid var(--medium-gray);
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       font-size: 1rem;
-      background-color: #fff;
+      background-color: var(--input-bg);
+      color: var(--text-color);
       -webkit-appearance: none;
     }
 
@@ -110,36 +132,56 @@
       padding: 14px;
       font-size: 1rem;
       font-weight: 600;
-      border: none;
+      border: none; 
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
+      color: white;
+    }
+    button:disabled {
+        background-color: var(--medium-gray);
+        cursor: not-allowed;
     }
 
     .btn-primary {
       background-color: var(--primary-color);
-      color: white;
     }
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       background-color: var(--primary-dark);
     }
 
     .btn-secondary {
       background-color: var(--secondary-color);
-      color: white;
     }
     
     .btn-danger {
         background-color: var(--danger-color);
-        color: white;
     }
 
     .btn-toggle {
-        background-color: var(--card-bg);
+        background-color: var(--light-gray);
         color: var(--text-color);
-        border: 1px solid var(--medium-gray);
+        border: 1px solid var(--border-color);
         margin-bottom: 10px;
         font-size: 0.9rem;
+    }
+    
+    .theme-toggle {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        padding: 0;
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Court Display */
@@ -251,7 +293,7 @@
         display: flex;
         justify-content: space-between;
         padding: 8px 4px;
-        border-bottom: 1px solid var(--light-gray);
+        border-bottom: 1px solid var(--border-color);
     }
     .stat-row:last-child, .history-item:last-child {
         border-bottom: none;
@@ -278,7 +320,7 @@
         color: var(--primary-dark);
     }
 
-    /* Management Modal */
+    /* --- MODAL STYLES --- */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -289,38 +331,43 @@
       z-index: 100;
       display: none;
       align-items: flex-end;
-      -webkit-overflow-scrolling: touch;
     }
     .modal-overlay.is-open {
       display: flex;
     }
-
-    .modal-content {
+    .modal-container {
       background: var(--bg-color);
       width: 100%;
-      padding: 20px;
       border-top-left-radius: 20px;
       border-top-right-radius: 20px;
       animation: slide-up 0.3s ease-out;
-      max-height: 85vh;
-      overflow-y: auto;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
     }
     @keyframes slide-up {
       from { transform: translateY(100%); }
       to { transform: translateY(0); }
     }
-
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      padding: 20px;
+      flex-shrink: 0; 
     }
-
     .modal-header h3 {
         margin: 0;
     }
-
+    .modal-body {
+      padding: 0 20px;
+      overflow-y: auto; 
+      flex-grow: 1;
+    }
+    .modal-footer {
+      padding: 20px;
+      flex-shrink: 0; 
+    }
     .close-btn {
       font-size: 1.5rem;
       font-weight: 300;
@@ -329,6 +376,7 @@
       cursor: pointer;
       width: auto;
       padding: 0;
+      color: var(--text-color);
     }
 
     .management-section {
@@ -352,7 +400,7 @@
         border-radius: 8px;
         margin-top: 5px;
         margin-bottom: 15px;
-        border: 1px solid var(--light-gray);
+        border: 1px solid var(--border-color);
     }
 
     /* Bottom Nav Bar for actions */
@@ -383,6 +431,7 @@
         color: var(--dark-gray);
         border: none;
         border-bottom: 2px solid transparent;
+        border-radius: 0;
     }
     .tab-buttons button:first-child {
         border-top-left-radius: 8px;
@@ -394,6 +443,7 @@
         background: var(--card-bg);
         border-bottom: 2px solid var(--primary-color);
         font-weight: bold;
+        color: var(--text-color);
     }
     .tab-content {
         display: none;
@@ -438,12 +488,13 @@
   <div class="app-container">
     <header>
       <h1>Badminton Shuffler</h1>
+      <button id="themeToggleBtn" class="theme-toggle" title="Toggle Light/Dark Mode">☀️</button>
     </header>
 
     <div id="setupControls" class="setup-card">
       <h3>Initial Setup</h3>
       <textarea id="players" placeholder="Enter player names, one per line..."></textarea>
-      <input type="number" id="courtCount" placeholder="Number of courts" min="1" />
+      <input type="number" id="courtCount" placeholder="Number of courts" min="1" max="10" />
       <button id="shuffleBtn" class="btn-primary">Shuffle & Start</button>
       <button id="initialHelpBtn" class="btn-secondary" style="margin-top: 10px;">How to Use</button>
     </div>
@@ -461,12 +512,12 @@
   </div>
   
   <div class="modal-overlay" id="managementModal">
-    <div class="modal-content">
+    <div class="modal-container">
       <div class="modal-header">
         <h3 id="modalTitle">Management</h3>
         <button class="close-btn" data-modal="managementModal">&times;</button>
       </div>
-      <div id="modalBody">
+      <div class="modal-body">
         <div id="mainManagementPanel">
             <!-- Player Management -->
             <div class="management-section">
@@ -483,6 +534,7 @@
                 <h4>Court Management</h4>
                 <h5>Add Court</h5>
                 <button id="addCourtBtn" class="btn-primary">Add New Court</button>
+                <small id="addCourtNotice" class="hidden" style="display: block; margin-top: -5px; margin-bottom: 10px; color: var(--warning-color);"></small>
                 <h5 style="margin-top: 20px;">Remove Court</h5>
                 <select id="courtToRemove"><option value="">Select Court to Remove</option></select>
                 <button id="removeCourtBtn" class="btn-danger">Remove Selected Court</button>
@@ -490,27 +542,20 @@
              <!-- Game Actions -->
             <div class="management-section">
                 <h4>Game Actions</h4>
+                <button id="undoBtn" class="btn-secondary hidden" style="margin-bottom: 10px;">Undo Last Game</button>
                 <button id="resetGameBtn" class="btn-danger">Reset Everything</button>
             </div>
             <!-- App Info -->
             <div class="management-section">
                 <h4>About</h4>
                 <div class="changelog">
-                    <p><strong>Author:</strong> ghan caballes</p>
-                    <p><strong>Version:</strong> 2.5</p>
+                    <p><strong>Author:</strong> Ghan Caballes</p>
+                    <p><strong>Version:</strong> 3.3</p>
                     <h5>Changelog:</h5>
                     <ul>
-                        <li><strong>v2.5:</strong> Grouped items in Management panel.</li>
-                        <li><strong>v2.4:</strong> Added Help button to initial setup.</li>
-                        <li><strong>v2.3:</strong> Added 'Help' section and App Info.</li>
-                        <li><strong>v2.2:</strong> Score inputs now use placeholders.</li>
-                        <li><strong>v2.1:</strong> Winner is now automatically selected based on score.</li>
-                        <li><strong>v2.0:</strong> Added Match History, Pairing Stats, and Score Keeping.</li>
-                        <li><strong>v1.4:</strong> Added success notifications (toasts).</li>
-                        <li><strong>v1.3:</strong> Added total player count to Stats panel.</li>
-                        <li><strong>v1.2:</strong> Added persistent storage and a Reset button.</li>
-                        <li><strong>v1.1:</strong> Implemented bulk player additions.</li>
-                        <li><strong>v1.0:</strong> Initial release.</li>
+                        <li><strong>v3.3:</strong> Added notice for disabled 'Add Court' button.</li>
+                        <li><strong>v3.2:</strong> Added Undo feature & realistic court limits.</li>
+                        <li><strong>v3.1:</strong> Changed light theme card background to aliceblue.</li>
                     </ul>
                 </div>
             </div>
@@ -518,40 +563,48 @@
         <!-- Sit Out Management (Dynamically created) -->
         <div id="sitOutManagementControls" class="hidden"></div>
       </div>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal-btn" data-modal="managementModal">Close</button>
+      </div>
     </div>
   </div>
   
   <div class="modal-overlay" id="helpModal">
-      <div class="modal-content">
+      <div class="modal-container">
           <div class="modal-header">
               <h3>How to Use</h3>
               <button class="close-btn" data-modal="helpModal">&times;</button>
           </div>
-          <div class="help-content">
-              <h5>1. Initial Setup</h5>
-              <p>To begin, enter the names of all players into the text area, with each name on a new line. Then, enter the number of courts available and click "Shuffle & Start".</p>
-              <img src="https://ghancaballes.com/wp-content/uploads/2025/07/initial-setup.png" alt="Screenshot of the initial setup screen with player list and court count fields highlighted.">
+          <div class="modal-body">
+            <div class="help-content">
+                <h5>1. Initial Setup</h5>
+                <p>To begin, enter the names of all players into the text area, with each name on a new line. Then, enter the number of courts available and click "Shuffle & Start".</p>
+                <img src="https://ghancaballes.com/wp-content/uploads/2025/07/initial-setup.png" alt="Screenshot of the initial setup screen with player list and court count fields highlighted.">
 
-              <h5>2. The Main Screen</h5>
-              <p>Once started, you will see courts populated with players. The app automatically creates the most balanced teams possible, trying to avoid frequent repeats of teammates and opponents.</p>
-              <p>Below the courts, you'll find the "Waiting Area" for players ready to play and the "Players on Cooldown" list for those who just finished a game.</p>
+                <h5>2. The Main Screen</h5>
+                <p>Once started, you will see courts populated with players. The app automatically creates the most balanced teams possible, trying to avoid frequent repeats of teammates and opponents.</p>
+                <p>Below the courts, you'll find the "Waiting Area" for players ready to play and the "Players on Cooldown" list for those who just finished a game.</p>
 
-              <h5>3. Completing a Game</h5>
-              <p>When a game is finished, click the "Complete Game" button on the corresponding court. Enter the scores for each team and click "Record Game Result". The app automatically determines the winner.</p>
-              <p>The players from that game will be moved to the cooldown list, and the empty court will be refilled from the waiting list.</p>
-              <img src="https://ghancaballes.com/wp-content/uploads/2025/07/complete-a-game.png" alt="Screenshot of how to complete a game.">
+                <h5>3. Completing a Game</h5>
+                <p>When a game is finished, click the "Complete Game" button on the corresponding court. Enter the scores for each team and click "Record Game Result". The app automatically determines the winner.</p>
+                <p>The players from that game will be moved to the cooldown list, and the empty court will be refilled from the waiting list.</p>
+                <img src="https://ghancaballes.com/wp-content/uploads/2025/07/complete-a-game.png" alt="Screenshot of how to complete a game.">
 
-              <h5>4. Bottom Action Bar</h5>
-              <ul>
-                  <li><strong>Stats:</strong> Toggles a panel showing player win/loss records and detailed pairing stats. You can see how often any two players have been teammates versus opponents.</li>
-                  <li><strong>History:</strong> Toggles a panel showing a complete log of all matches played, including teams, scores, and timestamps.</li>
-                  <li><strong>Manage:</strong> Opens a screen where you can add or remove players and courts during a session, or reset the entire game.</li>
-                  <li><strong>Help:</strong> Opens this guide.</li>
-              </ul>
-              <img src="https://ghancaballes.com/wp-content/uploads/2025/07/bottom-action-bar.png" alt="Screenshot of the bottom action bar.">
+                <h5>4. Bottom Action Bar</h5>
+                <ul>
+                    <li><strong>Stats:</strong> Toggles a panel showing player win/loss records and detailed pairing stats. You can see how often any two players have been teammates versus opponents.</li>
+                    <li><strong>History:</strong> Toggles a panel showing a complete log of all matches played, including teams, scores, and timestamps.</li>
+                    <li><strong>Manage:</strong> Opens a screen where you can add or remove players and courts during a session, or reset the entire game.</li>
+                    <li><strong>Help:</strong> Opens this guide.</li>
+                </ul>
+                <img src="https://ghancaballes.com/wp-content/uploads/2025/07/bottom-action-bar.png" alt="Screenshot of the bottom action bar.">
 
-              <h5>5. Persistent Storage</h5>
-              <p>Your game state is saved automatically. If you accidentally refresh the page, your session will be restored, so you won't lose your progress.</p>
+                <h5>5. Persistent Storage</h5>
+                <p>Your game state is saved automatically. If you accidentally refresh the page, your session will be restored, so you won't lose your progress.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-secondary close-modal-btn" data-modal="helpModal">Close</button>
           </div>
       </div>
   </div>
@@ -570,6 +623,7 @@
     let showStats = false;
     let showHistory = false;
     let gameInProgress = false;
+    let lastGameState = null;
 
     // --- NOTIFICATIONS ---
     function showNotification(message, type = 'success') {
@@ -586,7 +640,7 @@
         if (!gameInProgress) return;
         const gameState = {
             courts, waitingPlayers, playersOnCooldown, playCount, matchHistory,
-            teamPairings, opponentPairings, allPlayersList, gameInProgress
+            teamPairings, opponentPairings, allPlayersList, gameInProgress, lastGameState
         };
         localStorage.setItem('badmintonGameState', JSON.stringify(gameState));
     }
@@ -606,6 +660,7 @@
             opponentPairings = gameState.opponentPairings;
             allPlayersList = gameState.allPlayersList;
             gameInProgress = gameState.gameInProgress;
+            lastGameState = gameState.lastGameState || null;
 
             document.getElementById('setupControls').classList.add('hidden');
             document.getElementById('actionBar').classList.remove('hidden');
@@ -613,6 +668,31 @@
             updateDropdowns();
         }
     }
+    
+    // --- THEME ---
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggleBtn.textContent = '🌙';
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeToggleBtn.textContent = '☀️';
+        }
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        const newTheme = isDarkMode ? 'light' : 'dark';
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(savedTheme);
+    }
+
 
     // --- UTILITIES ---
     function getPairKey(a, b) { return a < b ? a + "|" + b : b + "|" + a; }
@@ -722,19 +802,39 @@
         }
         return bestGroup;
     }
+    
+    // --- PLAYER NAME VALIDATION ---
+    function validatePlayerNames(names) {
+        const longNames = names.filter(name => name.length > 10);
+        if (longNames.length > 0) {
+            alert(`The following player names are too long (max 10 characters):\n- ${longNames.join('\n- ')}`);
+            return false;
+        }
+        return true;
+    }
 
     // --- INITIALIZATION & SHUFFLE ---
     document.getElementById('shuffleBtn').onclick = function() {
-      allPlayersList = document.getElementById('players').value.split('\n').map(p=>p.trim()).filter(Boolean);
+      const playerNames = document.getElementById('players').value.split('\n').map(p=>p.trim()).filter(Boolean);
+      if (!validatePlayerNames(playerNames)) return;
+
+      allPlayersList = playerNames;
       if (allPlayersList.length < 4) { alert('At least 4 players required.'); return; }
       let courtCount = parseInt(document.getElementById('courtCount').value);
       if (!courtCount || courtCount < 1) { alert('Please enter a valid number of courts.'); return; }
+      if (courtCount > 10) { alert('Maximum of 10 courts is allowed.'); return; }
+      if (courtCount > Math.floor(allPlayersList.length / 4)) {
+          alert('Cannot have more courts than can be filled. At least 4 players are needed per court.');
+          return;
+      }
+
       playCount = {};
       allPlayersList.forEach(p => { playCount[p] = {games: 0, wins: 0, losses: 0}; });
       matchHistory = [];
       showStats = false;
       showHistory = false;
       gameInProgress = true;
+      lastGameState = null;
       initPairings(allPlayersList);
 
       courts = [];
@@ -758,6 +858,8 @@
             .filter(Boolean);
 
         if (newPlayerNames.length === 0) { alert('Please enter at least one player name.'); return; }
+        if (!validatePlayerNames(newPlayerNames)) return;
+
         let addedCount = 0;
         let existingNames = [];
 
@@ -843,11 +945,55 @@
         }
     };
     
+    // --- UNDO ---
+    document.getElementById('undoBtn').onclick = function() {
+        if (!lastGameState) {
+            alert('Nothing to undo.');
+            return;
+        }
+        courts = lastGameState.courts;
+        waitingPlayers = lastGameState.waitingPlayers;
+        playersOnCooldown = lastGameState.playersOnCooldown;
+        playCount = lastGameState.playCount;
+        matchHistory = lastGameState.matchHistory;
+        teamPairings = lastGameState.teamPairings;
+        opponentPairings = lastGameState.opponentPairings;
+        lastGameState = null; 
+
+        renderAll();
+        updateDropdowns();
+        showNotification('Last game has been undone.');
+        closeModal('managementModal');
+    };
+
     // --- RENDER ---
     function renderAll() {
         renderResults();
         renderStats();
         renderHistory();
+
+        const undoBtn = document.getElementById('undoBtn');
+        undoBtn.classList.toggle('hidden', !lastGameState);
+
+        const addCourtBtn = document.getElementById('addCourtBtn');
+        const addCourtNotice = document.getElementById('addCourtNotice');
+        const availablePlayers = waitingPlayers.length + playersOnCooldown.length + courts.reduce((acc, c) => acc + c.players.length, 0);
+        const potentialCourts = Math.floor(availablePlayers / 4);
+
+        let isDisabled = false;
+        let noticeText = '';
+
+        if (courts.length >= 10) {
+            isDisabled = true;
+            noticeText = 'Maximum of 10 courts reached.';
+        } else if (courts.length >= potentialCourts) {
+            isDisabled = true;
+            noticeText = 'Not enough players to add a new court.';
+        }
+
+        addCourtBtn.disabled = isDisabled;
+        addCourtNotice.textContent = noticeText;
+        addCourtNotice.classList.toggle('hidden', !isDisabled);
     }
     function renderResults() {
         const resultsDiv = document.getElementById('results');
@@ -1020,7 +1166,17 @@
         container.innerHTML = `<div class="players-list-card"><h4>Match History</h4><div class="list-content">${content}</div></div>`;
     }
 
-    window.recordWinner = function(courtIdx, winner, scoreA, scoreB) {
+    function recordWinner(courtIdx, winner, scoreA, scoreB) {
+      lastGameState = {
+          courts: JSON.parse(JSON.stringify(courts)),
+          waitingPlayers: [...waitingPlayers],
+          playersOnCooldown: [...playersOnCooldown],
+          playCount: JSON.parse(JSON.stringify(playCount)),
+          matchHistory: [...matchHistory],
+          teamPairings: JSON.parse(JSON.stringify(teamPairings)),
+          opponentPairings: JSON.parse(JSON.stringify(opponentPairings))
+      };
+
       const court = courts[courtIdx];
       if (court.players.length < 4) return;
       let teamA = court.teamA, teamB = court.teamB;
@@ -1131,7 +1287,7 @@
     });
     document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
 
-    document.querySelectorAll('.close-btn').forEach(btn => {
+    document.querySelectorAll('.close-btn, .close-modal-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             closeModal(this.getAttribute('data-modal'));
         });
@@ -1207,7 +1363,10 @@
     }
 
     // --- Initial Load ---
-    loadState();
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTheme();
+        loadState();
+    });
 
   </script>
 </body>
