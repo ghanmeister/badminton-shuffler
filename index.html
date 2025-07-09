@@ -283,11 +283,34 @@
       max-height: 400px;
       overflow-y: auto;
     }
-    .players-list-card.cooldown-box .list-content {
-        color: #856404;
+    .player-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        margin: 4px;
+        border-radius: 12px;
+        background-color: var(--light-gray);
+        font-size: 0.9rem;
+    }
+    .empty-list-notice {
+        font-style: italic;
+        opacity: 0.7;
     }
     .players-list-card.cooldown-box {
         background-color: #fff3cd;
+    }
+    .players-list-card.cooldown-box .list-content {
+        color: #856404;
+    }
+    body.dark-mode .players-list-card.cooldown-box {
+        background-color: #5f4c21;
+    }
+    body.dark-mode .players-list-card.cooldown-box h4,
+    body.dark-mode .players-list-card.cooldown-box .list-content {
+        color: #fdeeb3;
+    }
+    body.dark-mode .players-list-card.cooldown-box .player-tag {
+        background-color: #856404;
+        color: #fff;
     }
     .stat-row, .history-item {
         display: flex;
@@ -550,12 +573,12 @@
                 <h4>About</h4>
                 <div class="changelog">
                     <p><strong>Author:</strong> Ghan Caballes</p>
-                    <p><strong>Version:</strong> 3.3</p>
+                    <p><strong>Version:</strong> 3.5</p>
                     <h5>Changelog:</h5>
                     <ul>
+                        <li><strong>v3.5:</strong> Encapsulated players in waiting/cooldown lists.</li>
+                        <li><strong>v3.4:</strong> Fixed cooldown box colors in dark mode.</li>
                         <li><strong>v3.3:</strong> Added notice for disabled 'Add Court' button.</li>
-                        <li><strong>v3.2:</strong> Added Undo feature & realistic court limits.</li>
-                        <li><strong>v3.1:</strong> Changed light theme card background to aliceblue.</li>
                     </ul>
                 </div>
             </div>
@@ -977,8 +1000,8 @@
 
         const addCourtBtn = document.getElementById('addCourtBtn');
         const addCourtNotice = document.getElementById('addCourtNotice');
-        const availablePlayers = waitingPlayers.length + playersOnCooldown.length + courts.reduce((acc, c) => acc + c.players.length, 0);
-        const potentialCourts = Math.floor(availablePlayers / 4);
+        const availablePlayers = waitingPlayers.length + playersOnCooldown.length;
+        const potentialNewCourts = Math.floor(availablePlayers / 4);
 
         let isDisabled = false;
         let noticeText = '';
@@ -986,7 +1009,7 @@
         if (courts.length >= 10) {
             isDisabled = true;
             noticeText = 'Maximum of 10 courts reached.';
-        } else if (courts.length >= potentialCourts) {
+        } else if (potentialNewCourts < 1) {
             isDisabled = true;
             noticeText = 'Not enough players to add a new court.';
         }
@@ -1002,12 +1025,9 @@
             resultsDiv.appendChild(renderCourt(court.players, court.teamA, court.teamB, idx));
         });
         
-        if (waitingPlayers.length) {
-            resultsDiv.appendChild(renderSection('Waiting Area', waitingPlayers.map(p => `${p} (${playCount[p]?.games || 0} games)`).join(', '), ''));
-        }
-
+        resultsDiv.appendChild(renderSection('Waiting Area', waitingPlayers, ''));
         if (playersOnCooldown.length) {
-            resultsDiv.appendChild(renderSection('Players on Cooldown', playersOnCooldown.map(p => `${p} (${playCount[p]?.games || 0} games)`).join(', '), 'cooldown-box'));
+            resultsDiv.appendChild(renderSection('Players on Cooldown', playersOnCooldown, 'cooldown-box'));
         }
     }
     function renderCourt(courtPlayers, teamA, teamB, courtIdx) {
@@ -1057,10 +1077,20 @@
       `;
       return courtDiv;
     }
-    function renderSection(title, content, type) {
+    function renderSection(title, players, type) {
         const div = document.createElement('div');
         div.className = 'players-list-card ' + type;
-        div.innerHTML = `<h4>${title}</h4><div class="list-content">${content}</div>`;
+        
+        let contentHtml;
+        if (players.length === 0) {
+            contentHtml = `<p class="empty-list-notice">None</p>`;
+        } else {
+            contentHtml = players.map(p => 
+                `<span class="player-tag">${p} (${playCount[p]?.games || 0} games)</span>`
+            ).join('');
+        }
+
+        div.innerHTML = `<h4>${title}</h4><div class="list-content">${contentHtml}</div>`;
         return div;
     }
     
