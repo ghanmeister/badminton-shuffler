@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Badminton Shuffler</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     /* Default: Light Mode */
     :root {
@@ -12,6 +15,7 @@
       --secondary-color: #3498db;
       --danger-color: #e74c3c;
       --warning-color: #f39c12;
+      --info-color: #8e44ad;
       --light-gray: #ecf0f1;
       --medium-gray: #bdc3c7;
       --dark-gray: #7f8c8d;
@@ -44,7 +48,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       background-color: var(--bg-color);
       color: var(--text-color);
       overscroll-behavior-y: contain;
@@ -103,6 +107,30 @@
       box-shadow: var(--box-shadow);
       margin-bottom: 20px;
     }
+    .about-section {
+        margin-top: 20px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 15px;
+    }
+    .about-section h4 {
+        border-bottom: none;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .changelog-content {
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+    .changelog-content ul {
+        padding-left: 20px;
+    }
+    .changelog-content li {
+        margin-bottom: 5px;
+    }
 
     textarea, input, select {
       width: 100%;
@@ -114,6 +142,12 @@
       background-color: var(--input-bg);
       color: var(--text-color);
       -webkit-appearance: none;
+    }
+    
+    input[type="checkbox"] {
+        -webkit-appearance: checkbox;
+        appearance: checkbox;
+        width: auto;
     }
 
     textarea {
@@ -156,6 +190,14 @@
     
     .btn-danger {
         background-color: var(--danger-color);
+    }
+    
+    .btn-info {
+        background-color: var(--info-color);
+    }
+    
+    .btn-warning {
+        background-color: var(--warning-color);
     }
 
     .btn-toggle {
@@ -223,18 +265,17 @@
 
     .court-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 10px;
       margin-top: 10px;
     }
     .court-actions .complete-button {
       grid-column: 1 / -1;
     }
-    .court-actions .team-shuffle-button {
-      background-color: var(--secondary-color);
-    }
-    .court-actions .sit-out-button {
-      background-color: var(--warning-color);
+    .court-action-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
     
     /* Winner Selection Panel */
@@ -282,6 +323,9 @@
       line-height: 1.6;
       max-height: 400px;
       overflow-y: auto;
+    }
+    #statsModalBody .list-content {
+        padding: 0 20px;
     }
     .player-tag {
         display: inline-block;
@@ -341,6 +385,9 @@
     .history-teams .winner {
         font-weight: bold;
         color: var(--primary-dark);
+    }
+    body.dark-mode .history-teams .winner {
+        color: var(--primary-color);
     }
 
     /* --- MODAL STYLES --- */
@@ -409,14 +456,22 @@
         border-radius: var(--border-radius);
         box-shadow: var(--box-shadow);
     }
+    .edit-teams-player-list label {
+        display: block;
+        padding: 12px;
+        margin-bottom: 8px;
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .edit-teams-player-list input {
+        margin-right: 10px;
+    }
     
-    .changelog, .help-content {
+    .help-content {
         font-size: 0.9rem;
         line-height: 1.5;
         color: var(--dark-gray);
-    }
-    .changelog ul {
-        padding-left: 20px;
     }
     .help-content img {
         max-width: 100%;
@@ -520,10 +575,45 @@
       <input type="number" id="courtCount" placeholder="Number of courts" min="1" max="10" />
       <button id="shuffleBtn" class="btn-primary">Shuffle & Start</button>
       <button id="initialHelpBtn" class="btn-secondary" style="margin-top: 10px;">How to Use</button>
+      
+      <div class="about-section">
+          <h4>About</h4>
+          <div class="changelog-content">
+              <p><strong>Author:</strong> Ghan Caballes</p>
+              <p><strong>Collaborators:</strong> Van Ruiz, Aljun Montebon, Owen Pelito</p>
+              <p><strong>Version:</strong> 5.3</p>
+              <h5>Changelog:</h5>
+              <ul>
+                  <li><strong>v5.3:</strong> Added toast notification after recording a winner.</li>
+                  <li><strong>v5.2:</strong> Applied Roboto font and updated author credits.</li>
+                  <li><strong>v5.1:</strong> Moved About/Changelog to setup page and made it scrollable.</li>
+                  <li><strong>v5.0:</strong> Major UI overhaul with modals for Stats and History.</li>
+                  <li><strong>v4.2:</strong> Removed Shuffle button and added padding to stats modal.</li>
+                  <li><strong>v4.1:</strong> Fixed court button layout and renamed buttons.</li>
+                  <li><strong>v4.0:</strong> Fixed court button layout and checkbox visibility.</li>
+                  <li><strong>v3.9:</strong> Added "Edit Teams" button to manually set teams.</li>
+                  <li><strong>v3.8:</strong> Added crown icon to winning team in history.</li>
+                  <li><strong>v3.7:</strong> Converted Stats and History to modals.</li>
+                  <li><strong>v3.6:</strong> Added game counts to sit-out modal dropdowns.</li>
+                  <li><strong>v3.5:</strong> Encapsulated players in waiting/cooldown lists.</li>
+                  <li><strong>v3.4:</strong> Fixed cooldown box colors in dark mode.</li>
+                  <li><strong>v3.3:</strong> Added notice for disabled 'Add Court' button.</li>
+                  <li><strong>v3.2:</strong> Implemented player name length validation.</li>
+                  <li><strong>v3.1:</strong> Added "Undo Last Game" functionality.</li>
+                  <li><strong>v3.0:</strong> Introduced game management modal (add/remove players/courts).</li>
+                  <li><strong>v2.5:</strong> Added Dark/Light mode theme toggle.</li>
+                  <li><strong>v2.4:</strong> Implemented persistent game state via LocalStorage.</li>
+                  <li><strong>v2.3:</strong> Added detailed pairing stats (Teammate vs. Opponent).</li>
+                  <li><strong>v2.2:</strong> Created match history log with scores.</li>
+                  <li><strong>v2.1:</strong> Added win/loss tracking and player stats panel.</li>
+                  <li><strong>v2.0:</strong> Implemented intelligent team balancing logic to minimize repeat matchups.</li>
+                  <li><strong>v1.5:</strong> Added "Players on Cooldown" list to improve rotation fairness.</li>
+                  <li><strong>v1.0:</strong> Initial release with basic player shuffling and court assignment.</li>
+              </ul>
+          </div>
+      </div>
     </div>
-
-    <div id="statsContainer"></div>
-    <div id="historyContainer"></div>
+    
     <div id="results"></div>
   </div>
 
@@ -568,23 +658,10 @@
                 <button id="undoBtn" class="btn-secondary hidden" style="margin-bottom: 10px;">Undo Last Game</button>
                 <button id="resetGameBtn" class="btn-danger">Reset Everything</button>
             </div>
-            <!-- App Info -->
-            <div class="management-section">
-                <h4>About</h4>
-                <div class="changelog">
-                    <p><strong>Author:</strong> Ghan Caballes</p>
-                    <p><strong>Version:</strong> 3.5</p>
-                    <h5>Changelog:</h5>
-                    <ul>
-                        <li><strong>v3.5:</strong> Encapsulated players in waiting/cooldown lists.</li>
-                        <li><strong>v3.4:</strong> Fixed cooldown box colors in dark mode.</li>
-                        <li><strong>v3.3:</strong> Added notice for disabled 'Add Court' button.</li>
-                    </ul>
-                </div>
-            </div>
         </div>
-        <!-- Sit Out Management (Dynamically created) -->
+        <!-- Other panels will be injected here -->
         <div id="sitOutManagementControls" class="hidden"></div>
+        <div id="editTeamsControls" class="hidden"></div>
       </div>
       <div class="modal-footer">
         <button class="btn-secondary close-modal-btn" data-modal="managementModal">Close</button>
@@ -615,9 +692,9 @@
 
                 <h5>4. Bottom Action Bar</h5>
                 <ul>
-                    <li><strong>Stats:</strong> Toggles a panel showing player win/loss records and detailed pairing stats. You can see how often any two players have been teammates versus opponents.</li>
-                    <li><strong>History:</strong> Toggles a panel showing a complete log of all matches played, including teams, scores, and timestamps.</li>
-                    <li><strong>Manage:</strong> Opens a screen where you can add or remove players and courts during a session, or reset the entire game.</li>
+                    <li><strong>Stats:</strong> Opens a modal showing player win/loss records and detailed pairing stats.</li>
+                    <li><strong>History:</strong> Opens a modal showing a complete log of all matches played.</li>
+                    <li><strong>Manage:</strong> Opens a screen where you can add or remove players and courts, undo the last game, or reset the entire session.</li>
                     <li><strong>Help:</strong> Opens this guide.</li>
                 </ul>
                 <img src="https://ghancaballes.com/wp-content/uploads/2025/07/bottom-action-bar.png" alt="Screenshot of the bottom action bar.">
@@ -632,6 +709,36 @@
       </div>
   </div>
 
+  <div class="modal-overlay" id="statsModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3>Player Statistics</h3>
+            <button class="close-btn" data-modal="statsModal">&times;</button>
+        </div>
+        <div class="modal-body" id="statsModalBody">
+          <!-- Stats content will be rendered here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary close-modal-btn" data-modal="statsModal">Close</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3>Match History</h3>
+            <button class="close-btn" data-modal="historyModal">&times;</button>
+        </div>
+        <div class="modal-body" id="historyModalBody">
+          <!-- History content will be rendered here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary close-modal-btn" data-modal="historyModal">Close</button>
+        </div>
+    </div>
+  </div>
+
 
   <script>
     // --- STATE ---
@@ -643,8 +750,6 @@
     let teamPairings = {};
     let opponentPairings = {};
     let allPlayersList = [];
-    let showStats = false;
-    let showHistory = false;
     let gameInProgress = false;
     let lastGameState = null;
 
@@ -854,8 +959,6 @@
       playCount = {};
       allPlayersList.forEach(p => { playCount[p] = {games: 0, wins: 0, losses: 0}; });
       matchHistory = [];
-      showStats = false;
-      showHistory = false;
       gameInProgress = true;
       lastGameState = null;
       initPairings(allPlayersList);
@@ -992,8 +1095,6 @@
     // --- RENDER ---
     function renderAll() {
         renderResults();
-        renderStats();
-        renderHistory();
 
         const undoBtn = document.getElementById('undoBtn');
         undoBtn.classList.toggle('hidden', !lastGameState);
@@ -1026,16 +1127,25 @@
         });
         
         resultsDiv.appendChild(renderSection('Waiting Area', waitingPlayers, ''));
-        if (playersOnCooldown.length) {
+        if (playersOnCooldown.length > 0 || gameInProgress) {
             resultsDiv.appendChild(renderSection('Players on Cooldown', playersOnCooldown, 'cooldown-box'));
         }
     }
     function renderCourt(courtPlayers, teamA, teamB, courtIdx) {
       const courtDiv = document.createElement('div');
       courtDiv.className = 'court';
+      courtDiv.setAttribute('data-court', courtIdx);
       let statusOrButton;
+      let actionButtons = '';
+
       if (courtPlayers.length === 4) {
-          statusOrButton = `<button class="btn-primary complete-button" data-action="complete" data-court="${courtIdx}">Complete Game</button>`;
+          statusOrButton = `<button class="btn-primary complete-button" data-action="complete">Complete Game</button>`;
+          actionButtons = `
+            <div class="court-action-buttons">
+                <button class="btn-info" data-action="edit-teams">Edit</button>
+                <button class="btn-warning" data-action="sitout">Swap</button>
+            </div>
+          `;
       } else {
           statusOrButton = '<p style="text-align:center; color: var(--warning-color); font-weight:500;">Waiting for players...</p>';
       }
@@ -1057,22 +1167,15 @@
           ${statusOrButton}
           <div class="winner-selection" id="winnerSelection-${courtIdx}">
             <div class="score-inputs">
-                <div>
-                    <label for="scoreA-${courtIdx}">Team A Score</label>
-                    <input type="number" id="scoreA-${courtIdx}" min="0" placeholder="0">
-                </div>
-                <div>
-                    <label for="scoreB-${courtIdx}">Team B Score</label>
-                    <input type="number" id="scoreB-${courtIdx}" min="0" placeholder="0">
-                </div>
+                <div><label for="scoreA-${courtIdx}">Team A Score</label><input type="number" id="scoreA-${courtIdx}" min="0" placeholder="0"></div>
+                <div><label for="scoreB-${courtIdx}">Team B Score</label><input type="number" id="scoreB-${courtIdx}" min="0" placeholder="0"></div>
             </div>
             <div class="winner-buttons">
-                <button data-action="record-score" data-court="${courtIdx}" class="btn-primary">Record Game Result</button>
-                <button class="btn-cancel" data-action="cancel-win" data-court="${courtIdx}">Cancel</button>
+                <button data-action="record-score" class="btn-primary">Record Game Result</button>
+                <button data-action="cancel-win" class="btn-secondary">Cancel</button>
             </div>
           </div>
-          <button class="team-shuffle-button" data-action="shuffleteam" data-court="${courtIdx}">Shuffle Teams</button>
-          <button class="sit-out-button" data-action="sitout" data-court="${courtIdx}">Sit Out / Swap</button>
+          ${actionButtons}
         </div>
       `;
       return courtDiv;
@@ -1095,21 +1198,24 @@
     }
     
     function renderStats() {
-        const container = document.getElementById('statsContainer');
+        const container = document.getElementById('statsModalBody');
         container.innerHTML = '';
-        if (!showStats) return;
+        if (!gameInProgress) {
+            container.innerHTML = `<p class="empty-list-notice" style="padding: 20px;">No stats to show yet. Start a game first!</p>`;
+            return;
+        }
 
         let playerOptions = allPlayersList.map(p => `<option value="${p}">${p}</option>`).join('');
 
         container.innerHTML = `
-            <div class="players-list-card">
+            <div class="players-list-card" style="box-shadow: none; padding: 0;">
                 <div class="tab-buttons">
                     <button class="tab-btn active" data-tab="playerStats">Player Stats</button>
                     <button class="tab-btn" data-tab="pairingStats">Pairing Stats</button>
                 </div>
                 <div id="playerStats" class="tab-content active"></div>
                 <div id="pairingStats" class="tab-content">
-                    <select id="pairingPlayerSelect" class="form-control mb-2">
+                    <select id="pairingPlayerSelect" style="margin-bottom: 15px; margin-left: 20px; width: calc(100% - 40px);">
                         <option value="">Select a player...</option>
                         ${playerOptions}
                     </select>
@@ -1119,16 +1225,16 @@
         `;
         renderPlayerStats();
         
-        document.querySelectorAll('.tab-btn').forEach(btn => {
+        container.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById(this.dataset.tab).classList.add('active');
+                container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                container.querySelector(`#${this.dataset.tab}`).classList.add('active');
             });
         });
         
-        document.getElementById('pairingPlayerSelect').addEventListener('change', (e) => {
+        container.querySelector('#pairingPlayerSelect').addEventListener('change', (e) => {
             renderPairingStats(e.target.value);
         });
     }
@@ -1146,11 +1252,12 @@
                 <span class="stat-values">${stat.games}G / ${stat.wins}W / ${stat.losses}L</span>
             </div>`
         ).join('');
-        container.innerHTML = `<div class="list-content">${content}</div>`;
+        container.innerHTML = `<div class="list-content">${content || '<p class="empty-list-notice">No player stats available.</p>'}</div>`;
     }
 
     function renderPairingStats(selectedPlayer) {
         const container = document.getElementById('pairingStatsResult');
+        if (!container) return;
         if (!selectedPlayer) {
             container.innerHTML = '';
             return;
@@ -1173,19 +1280,23 @@
                 <span class="stat-values">Teammate: ${p.team} | Opponent: ${p.opp}</span>
             </div>`
         ).join('');
-        container.innerHTML = `<div class="list-content">${content}</div>`;
+        container.innerHTML = `<div class="list-content">${content || '<p class="empty-list-notice">No pairing stats available.</p>'}</div>`;
     }
     
     function renderHistory() {
-        const container = document.getElementById('historyContainer');
+        const container = document.getElementById('historyModalBody');
         container.innerHTML = '';
-        if (!showHistory || matchHistory.length === 0) return;
+
+        if (!gameInProgress || matchHistory.length === 0) {
+            container.innerHTML = `<p class="empty-list-notice" style="padding: 20px;">No match history to show yet.</p>`;
+            return;
+        }
         
         const content = matchHistory.map(match => {
             const teamAStr = match.teamA.join(' & ');
             const teamBStr = match.teamB.join(' & ');
-            const teamAFormatted = match.winner === 'A' ? `<span class="winner">${teamAStr}</span>` : teamAStr;
-            const teamBFormatted = match.winner === 'B' ? `<span class="winner">${teamBStr}</span>` : teamBStr;
+            const teamAFormatted = match.winner === 'A' ? `<span class="winner">👑 ${teamAStr}</span>` : teamAStr;
+            const teamBFormatted = match.winner === 'B' ? `<span class="winner">👑 ${teamBStr}</span>` : teamBStr;
 
             return `<div class="history-item">
                 <div class="history-teams">${teamAFormatted} vs ${teamBFormatted}</div>
@@ -1193,7 +1304,7 @@
             </div>`;
         }).join('');
         
-        container.innerHTML = `<div class="players-list-card"><h4>Match History</h4><div class="list-content">${content}</div></div>`;
+        container.innerHTML = `<div class="players-list-card" style="box-shadow: none; padding: 0;"><div class="list-content">${content}</div></div>`;
     }
 
     function recordWinner(courtIdx, winner, scoreA, scoreB) {
@@ -1224,30 +1335,25 @@
       refillAllEmptyCourts();
       renderAll();
       updateDropdowns();
+      showNotification("Winner recorded");
     };
-    
-    function shuffleTeams(courtIdx) {
-        let court = courts[courtIdx];
-        if (!court || court.players.length < 4) return;
-        let playersToShuffle = [...court.players];
-        shuffleArray(playersToShuffle);
-        court.teamA = [playersToShuffle[0], playersToShuffle[1]];
-        court.teamB = [playersToShuffle[2], playersToShuffle[3]];
-        renderAll();
-        saveState();
-    }
     
     // --- EVENT LISTENERS ---
     document.getElementById('results').onclick = function(e) {
       const target = e.target;
+      if (!target.hasAttribute('data-action')) return;
+      
       const action = target.getAttribute('data-action');
-      const courtIdx = parseInt(target.getAttribute('data-court'));
+      const courtDiv = target.closest('.court');
+      const courtIdx = parseInt(courtDiv?.getAttribute('data-court'));
       
       if (isNaN(courtIdx)) return;
 
       if (action === 'complete') {
-        document.querySelector(`#winnerSelection-${courtIdx}`).style.display = 'block';
+        courtDiv.querySelector('.winner-selection').style.display = 'block';
         target.style.display = 'none';
+        const actionButtons = courtDiv.querySelector('.court-action-buttons');
+        if(actionButtons) actionButtons.style.display = 'none';
       } else if (action === 'record-score') {
         const scoreA = parseInt(document.getElementById(`scoreA-${courtIdx}`).value, 10);
         const scoreB = parseInt(document.getElementById(`scoreB-${courtIdx}`).value, 10);
@@ -1263,24 +1369,24 @@
         const winner = scoreA > scoreB ? 'A' : 'B';
         recordWinner(courtIdx, winner, scoreA, scoreB);
       } else if (action === 'cancel-win') {
-        document.querySelector(`#winnerSelection-${courtIdx}`).style.display = 'none';
-        document.querySelector(`.complete-button[data-court="${courtIdx}"]`).style.display = 'block';
-      } else if (action === 'shuffleteam') {
-        shuffleTeams(courtIdx);
+        courtDiv.querySelector('.winner-selection').style.display = 'none';
+        courtDiv.querySelector('.complete-button').style.display = 'block';
+        const actionButtons = courtDiv.querySelector('.court-action-buttons');
+        if(actionButtons) actionButtons.style.display = 'grid';
+      } else if (action === 'edit-teams') {
+        showEditTeamsModal(courtIdx);
       } else if (action === 'sitout') {
         showSitOutModal(courtIdx);
       }
     };
 
     document.getElementById('statsBtn').addEventListener('click', () => {
-        showStats = !showStats;
-        showHistory = false;
-        renderAll();
+        renderStats();
+        openModal('statsModal');
     });
     document.getElementById('historyBtn').addEventListener('click', () => {
-        showHistory = !showHistory;
-        showStats = false;
-        renderAll();
+        renderHistory();
+        openModal('historyModal');
     });
     document.getElementById('initialHelpBtn').addEventListener('click', () => openModal('helpModal'));
 
@@ -1309,9 +1415,15 @@
         }
     }
 
+    function showPanel(panelId) {
+        ['mainManagementPanel', 'sitOutManagementControls', 'editTeamsControls'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(panelId).classList.remove('hidden');
+    }
+
     document.getElementById('manageGameBtn').addEventListener('click', () => {
-        document.getElementById('mainManagementPanel').classList.remove('hidden');
-        document.getElementById('sitOutManagementControls').classList.add('hidden');
+        showPanel('mainManagementPanel');
         document.getElementById('modalTitle').textContent = 'Manage Game';
         openModal('managementModal');
     });
@@ -1338,26 +1450,21 @@
         const availableReplacements = [...waitingPlayers, ...playersOnCooldown];
         if (availableReplacements.length === 0) { alert("No players available to swap in."); return; }
 
-        const sitOutPanel = document.getElementById('sitOutManagementControls');
-        document.getElementById('mainManagementPanel').classList.add('hidden');
-        sitOutPanel.classList.remove('hidden');
+        showPanel('sitOutManagementControls');
         document.getElementById('modalTitle').textContent = `Swap Player on Court ${courtIdx + 1}`;
+        const sitOutPanel = document.getElementById('sitOutManagementControls');
         
-        let playerOptions = court.players.map(p => `<option value="${p}">${p}</option>`).join('');
-        let replacementOptions = availableReplacements.map(p => `<option value="${p}">${p}</option>`).join('');
+        let playerOptions = court.players.map(p => `<option value="${p}">${p} (${playCount[p]?.games || 0} games)</option>`).join('');
+        let replacementOptions = availableReplacements.map(p => `<option value="${p}">${p} (${playCount[p]?.games || 0} games)</option>`).join('');
 
         sitOutPanel.innerHTML = `
             <div class="management-section">
-                <h4>Player to Sit Out</h4>
-                <select id="sitOutPlayerSelect">${playerOptions}</select>
+                <h4>Player to Sit Out</h4><select id="sitOutPlayerSelect">${playerOptions}</select>
             </div>
             <div class="management-section">
-                <h4>Replacement Player</h4>
-                <select id="sitOutReplacementSelect">${replacementOptions}</select>
+                <h4>Replacement Player</h4><select id="sitOutReplacementSelect">${replacementOptions}</select>
             </div>
-            <div class="management-section">
-                <button id="sitOutConfirmBtn" class="btn-primary">Confirm Swap</button>
-            </div>
+            <div class="management-section"><button id="sitOutConfirmBtn" class="btn-primary">Confirm Swap</button></div>
         `;
         
         openModal('managementModal');
@@ -1369,8 +1476,7 @@
         const replacementPlayer = document.getElementById('sitOutReplacementSelect').value;
 
         if (!playerToSitOut || !replacementPlayer || playerToSitOut === replacementPlayer) {
-            alert('Invalid selection. Please choose two different players.');
-            return;
+            alert('Invalid selection. Please choose two different players.'); return;
         }
 
         let court = courts[courtIdx];
@@ -1390,6 +1496,67 @@
         refillAllEmptyCourts();
         renderAll();
         closeModal('managementModal');
+    }
+    
+    // --- EDIT TEAMS LOGIC ---
+    function showEditTeamsModal(courtIdx) {
+        const court = courts[courtIdx];
+        if (court.players.length < 4) { alert("Court is not full, cannot edit teams."); return; }
+
+        showPanel('editTeamsControls');
+        document.getElementById('modalTitle').textContent = `Edit Teams for Court ${courtIdx + 1}`;
+        const editPanel = document.getElementById('editTeamsControls');
+
+        let playerCheckboxes = court.players.map(p => `
+            <label><input type="checkbox" name="edit-team-player" value="${p}"> ${p}</label>
+        `).join('');
+
+        editPanel.innerHTML = `
+            <div class="management-section">
+                <h4>Select 2 Players for Team A</h4>
+                <div class="edit-teams-player-list">${playerCheckboxes}</div>
+                <button id="editTeamsSaveBtn" class="btn-primary" disabled>Save Changes</button>
+            </div>
+        `;
+
+        const checkboxes = editPanel.querySelectorAll('input[type="checkbox"]');
+        const saveBtn = editPanel.querySelector('#editTeamsSaveBtn');
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checkedCount = Array.from(checkboxes).filter(i => i.checked).length;
+                saveBtn.disabled = checkedCount !== 2;
+            });
+        });
+
+        saveBtn.onclick = () => processTeamEdit(courtIdx, checkboxes);
+        openModal('managementModal');
+    }
+
+    function processTeamEdit(courtIdx, checkboxes) {
+        const teamA = [];
+        const teamB = [];
+        const allCourtPlayers = courts[courtIdx].players;
+
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                teamA.push(cb.value);
+            }
+        });
+
+        allCourtPlayers.forEach(p => {
+            if (!teamA.includes(p)) {
+                teamB.push(p);
+            }
+        });
+
+        courts[courtIdx].teamA = teamA;
+        courts[courtIdx].teamB = teamB;
+
+        renderAll();
+        saveState();
+        closeModal('managementModal');
+        showNotification(`Teams for Court ${courtIdx + 1} have been updated.`);
     }
 
     // --- Initial Load ---
