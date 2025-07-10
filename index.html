@@ -66,17 +66,18 @@
     }
 
     header {
-      text-align: center;
-      margin-bottom: 24px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      position: relative;
+      margin-bottom: 24px;
     }
 
     h1 {
+      flex-grow: 1;
+      text-align: center;
       font-size: 1.8rem;
       font-weight: 700;
+      margin-left: 44px; /* Space for the button */
     }
     
     h3 {
@@ -209,10 +210,6 @@
     }
     
     .theme-toggle {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
         width: 44px;
         height: 44px;
         font-size: 1.5rem;
@@ -224,6 +221,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
     }
 
     /* Court Display */
@@ -581,9 +579,10 @@
           <div class="changelog-content">
               <p><strong>Author:</strong> Ghan Caballes</p>
               <p><strong>Collaborators:</strong> Van Ruiz, Aljun Montebon, Owen Pelito</p>
-              <p><strong>Version:</strong> 5.3</p>
+              <p><strong>Version:</strong> 5.4</p>
               <h5>Changelog:</h5>
               <ul>
+                  <li><strong>v5.4:</strong> Display total player count in stats modal title.</li>
                   <li><strong>v5.3:</strong> Added toast notification after recording a winner.</li>
                   <li><strong>v5.2:</strong> Applied Roboto font and updated author credits.</li>
                   <li><strong>v5.1:</strong> Moved About/Changelog to setup page and made it scrollable.</li>
@@ -712,7 +711,7 @@
   <div class="modal-overlay" id="statsModal">
     <div class="modal-container">
         <div class="modal-header">
-            <h3>Player Statistics</h3>
+            <h3 id="statsModalTitle">Player Statistics</h3>
             <button class="close-btn" data-modal="statsModal">&times;</button>
         </div>
         <div class="modal-body" id="statsModalBody">
@@ -1200,10 +1199,15 @@
     function renderStats() {
         const container = document.getElementById('statsModalBody');
         container.innerHTML = '';
+        const statsModalTitle = document.getElementById('statsModalTitle');
+        
         if (!gameInProgress) {
+            statsModalTitle.textContent = 'Player Statistics';
             container.innerHTML = `<p class="empty-list-notice" style="padding: 20px;">No stats to show yet. Start a game first!</p>`;
             return;
         }
+
+        statsModalTitle.textContent = `Player Statistics (${allPlayersList.length})`;
 
         let playerOptions = allPlayersList.map(p => `<option value="${p}">${p}</option>`).join('');
 
